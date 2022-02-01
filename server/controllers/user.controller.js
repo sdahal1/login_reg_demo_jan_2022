@@ -2,7 +2,7 @@ const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-
+console.log("process env jauns", process.env.SECRET_KEY)
 
 
 
@@ -24,10 +24,13 @@ class UserController {
     register = (req, res) => {
         User.create(req.body)
           .then(user => {
-              const userToken = jwt.sign({
-                  id: user._id
+              //when the .then() happens that means taht the user from the form was successsfully created and is stored in that variable "user" which has info about the user that was just put into the db, including the field _id
+              const userToken= jwt.sign({
+                  id: user._id,
+                  firstName: user.firstName
               }, process.env.SECRET_KEY);
        
+              //respond with a cookie called "usertoken" which contains the JWT from above called userTokenJWT AND also respond with json with info abou the user who just got created
               res
                   .cookie("usertoken", userToken, process.env.SECRET_KEY, {
                       httpOnly: true
