@@ -42,7 +42,7 @@ class UserController {
      
         if(user === null) {
             // email not found in users collection
-            return res.sendStatus(400);
+            return res.json({msg: "User not found. Who YOU?!"})
         }
      
         // if we made it this far, we found a user with this email address
@@ -51,7 +51,7 @@ class UserController {
      
         if(!correctPassword) {
             // password wasn't a match!
-            return res.sendStatus(400);
+            return res.json({msg: "Password is incorrect!"})
         }
      
         // if we made it this far, the password was correct
@@ -66,6 +66,29 @@ class UserController {
             })
             .json({ msg: "success!" });
     }
+
+    //this is the same way to do login without the aync await
+    // login(req, res) {
+    //     User.findOne({email: req.body.email})
+    //       .then(user => {
+    //         if(user === null) {
+    //           res.json({msg: "invalid login attempt"});
+    //         } else {
+    //           bcrypt.compare(req.body.password, user.password)
+    //             .then(passwordIsValid => {
+    //               if(passwordIsValid) {
+    //                 res
+    //                   .cookie("usertoken", jwt.sign({_id: user._id}, process.env.SECRET_KEY), {httpOnly: true})
+    //                   .json({msg: "success!"});
+    //               } else {
+    //                 res.json({msg: "invalid login attempt, incorrect password"});
+    //               }
+    //             })
+    //             .catch(err => res.json({msg: "invalid login attempt", err}));
+    //         }
+    //       })
+    //       .catch(err => res.json(err));
+    // }
 
     logout= (req, res) => {
         res.clearCookie('usertoken');
