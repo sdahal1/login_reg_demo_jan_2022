@@ -1,6 +1,6 @@
 const User = require("../models/user.model");
-
-
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 
 
@@ -65,6 +65,11 @@ class UserController {
                 httpOnly: true
             })
             .json({ msg: "success!" });
+    }
+
+    logout= (req, res) => {
+        res.clearCookie('usertoken');
+        res.sendStatus(200);
     }
 }
 
