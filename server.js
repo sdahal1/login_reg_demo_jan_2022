@@ -1,6 +1,8 @@
 const express = require("express")
 const cors = require("cors")
 
+require('dotenv').config(); //so that we can read the information about our secret key which is stored in the .env file
+
 
 const app = express(); 
 const port = 8000;
