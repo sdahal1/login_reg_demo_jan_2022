@@ -53,11 +53,11 @@ class UserController {
       }
 
     login = async(req, res) => {
-        const user = await User.findOne({ email: req.body.email });
-     
+        const user = await User.findOne({ email: req.body.email }); //see if the user exists in db
+
         if(user === null) {
             // email not found in users collection
-            return res.json({msg: "User not found. Who YOU?!"})
+            return res.json({error: "User not found. Who YOU?!"})
         }
      
         // if we made it this far, we found a user with this email address
@@ -66,12 +66,13 @@ class UserController {
      
         if(!correctPassword) {
             // password wasn't a match!
-            return res.json({msg: "Password is incorrect!"})
+            return res.json({error: "Password is incorrect!"})
         }
      
         // if we made it this far, the password was correct
         const userToken = jwt.sign({
-            id: user._id
+            id: user._id,
+            firstName: user.firstName
         }, process.env.SECRET_KEY);
      
         // note that the response object allows chained calls to cookie and json
@@ -108,6 +109,20 @@ class UserController {
     logout= (req, res) => {
         res.clearCookie('usertoken');
         res.sendStatus(200);
+    }
+
+
+    getLoggedInUser = (req,res)=>{
+        //use the info stored in the cookie to get the id of the logged in user and query the db to find a user with that id, and return with info about the logged in user
+        const decodedJWT = jwt.decode(req.cookies.usertoken, {complete:true})
+        // decodedJWT.payload.id
+        User.findOne({_id: decodedJWT.payload.id })
+            .then(foundUser=>{
+                res.json({results: foundUser})
+            })
+            .catch(err=>{
+                res.json(err)
+            })
     }
 }
 
